@@ -1,11 +1,28 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./Header.module.scss";
-import { Link, NavLink } from "react-router-dom";
-import { FaShoppingCart, FaTimes } from "react-icons/fa";
+import { Link, NavLink, useNavigate } from "react-router-dom";
+import { FaShoppingCart, FaTimes, FaUserCircle } from "react-icons/fa";
 import { HiOutlineMenuAlt3 } from "react-icons/hi";
+import { onAuthStateChanged, signOut } from "firebase/auth";
+import { auth } from "../../firebase/config";
+import { toast } from "react-toastify";
 
 export default function Header() {
   const [showMenu, setShowMenu] = useState(false);
+  const [userName, setUserName] = useState("");
+  const navigate = useNavigate();
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        const uid = user.uid;
+
+        setUserName(user.displayName);
+      } else {
+        setUserName("");
+      }
+    });
+  }, []);
+
   const toggleMenu = () => {
     setShowMenu(!showMenu);
   };
@@ -30,6 +47,17 @@ export default function Header() {
         <p>0</p>
       </Link>
     );
+  };
+  const logOut = () => {
+    signOut(auth)
+      .then(() => {
+        toast.success("LogOut Succesfully.");
+        console.log("done");
+        navigate("/");
+      })
+      .catch((error) => {
+        toast.error(error.message);
+      });
   };
   return (
     <header>
@@ -62,9 +90,22 @@ export default function Header() {
           </ul>
           <div className={styles["header-right"]} onClick={hideMenu}>
             <span className={styles.links}>
-              <Link to="/login">Login</Link>
-              <Link to="/register">Register</Link>
-              <Link to="/order-History">My Orders</Link>
+              <NavLink to="/login" className={activeLink}>
+                Login
+              </NavLink>
+              <a href="#">
+                <FaUserCircle size={16} />
+                {userName}
+              </a>
+              <NavLink to="/register" className={activeLink}>
+                Register
+              </NavLink>
+              <NavLink to="/order-History" className={activeLink}>
+                My Orders
+              </NavLink>
+              <NavLink to="/" onClick={logOut}>
+                LogOut
+              </NavLink>
             </span>
             <span className={styles.cart}>{cartIcon()}</span>
           </div>
