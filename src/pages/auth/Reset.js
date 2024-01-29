@@ -1,12 +1,11 @@
 import React, { useState } from "react";
 import styles from "./auth.module.scss";
 import resetimg from "../../assets/resetimage.jpg";
-import { Link, useSearchParams } from "react-router-dom";
-import { FaGoogle } from "react-icons/fa";
+import { Link } from "react-router-dom";
 import Card from "../../components/card/Card";
 import { auth } from "../../firebase/config";
 import { toast } from "react-toastify";
-import { sendPasswordResetEmail, getUserByEmail, getAuth } from "firebase/auth";
+import { sendPasswordResetEmail } from "firebase/auth";
 import Loader from "../../components/loader/Loader";
 
 export default function Reset() {
@@ -46,7 +45,7 @@ export default function Reset() {
       {isLoading && <Loader />}
       <section className={`container ${styles.auth}`}>
         <div className={styles.img}>
-          <img src={resetimg} alt="login image" width={400} />
+          <img src={resetimg} alt="login " width={400} />
         </div>
         <div className={styles.form}>
           <Card>

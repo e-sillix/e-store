@@ -4,11 +4,7 @@ import logimg from "../../assets/logimage.jpg";
 import { Link, useNavigate } from "react-router-dom";
 import { FaGoogle } from "react-icons/fa";
 import Card from "../../components/card/Card";
-import {
-  GoogleAuthProvider,
-  signInWithEmailAndPassword,
-  signInWithPopup,
-} from "firebase/auth";
+import { signInWithEmailAndPassword, signInWithPopup } from "firebase/auth";
 import { auth, googleProvider } from "../../firebase/config";
 import { toast } from "react-toastify";
 import Loader from "../../components/loader/Loader";
@@ -22,7 +18,6 @@ export default function Login() {
     setIsLoading(true);
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
-        const user = userCredential.user;
         setIsLoading(false);
         navigate("/");
         toast.success("Login Successful");
@@ -49,7 +44,7 @@ export default function Login() {
       {isLoading && <Loader />}
       <section className={`container ${styles.auth}`}>
         <div className={styles.img}>
-          <img src={logimg} alt="login image" width={400} />
+          <img src={logimg} alt="login " width={400} />
         </div>
         <div className={styles.form}>
           <Card>

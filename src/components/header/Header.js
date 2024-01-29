@@ -6,22 +6,41 @@ import { HiOutlineMenuAlt3 } from "react-icons/hi";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import { auth } from "../../firebase/config";
 import { toast } from "react-toastify";
+import { useDispatch } from "react-redux";
+import {
+  REMOVE_ACTIVE_USER,
+  SET_ACTIVE_USER,
+} from "../../redux/slice/authSlice";
+import ShowOnLogin, { ShowOnLogOut } from "../hiddenLink/hiddenLink";
 
 export default function Header() {
   const [showMenu, setShowMenu] = useState(false);
   const [userName, setUserName] = useState("");
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
-        const uid = user.uid;
-
-        setUserName(user.displayName);
+        if (!user.displayName) {
+          const u1 = user.email.slice(0, -10);
+          const uName = u1.charAt(0).toUpperCase() + u1.slice(1);
+          setUserName(uName);
+        } else {
+          setUserName(user.displayName);
+        }
+        dispatch(
+          SET_ACTIVE_USER({
+            email: user.email,
+            userName: user.displayName,
+            userID: user.uid,
+          })
+        );
       } else {
         setUserName("");
+        dispatch(REMOVE_ACTIVE_USER());
       }
     });
-  }, []);
+  }, [dispatch]);
 
   const toggleMenu = () => {
     setShowMenu(!showMenu);
@@ -52,7 +71,6 @@ export default function Header() {
     signOut(auth)
       .then(() => {
         toast.success("LogOut Succesfully.");
-        console.log("done");
         navigate("/");
       })
       .catch((error) => {
@@ -90,22 +108,30 @@ export default function Header() {
           </ul>
           <div className={styles["header-right"]} onClick={hideMenu}>
             <span className={styles.links}>
-              <NavLink to="/login" className={activeLink}>
-                Login
-              </NavLink>
-              <a href="#">
-                <FaUserCircle size={16} />
-                {userName}
-              </a>
+              <ShowOnLogOut>
+                <NavLink to="/login" className={activeLink}>
+                  Login
+                </NavLink>
+              </ShowOnLogOut>
+              <ShowOnLogin>
+                <a href="#home" style={{ color: "#ff7722" }}>
+                  <FaUserCircle size={16} />
+                  {userName}
+                </a>
+              </ShowOnLogin>
               <NavLink to="/register" className={activeLink}>
                 Register
               </NavLink>
-              <NavLink to="/order-History" className={activeLink}>
-                My Orders
-              </NavLink>
-              <NavLink to="/" onClick={logOut}>
-                LogOut
-              </NavLink>
+              <ShowOnLogin>
+                <NavLink to="/order-History" className={activeLink}>
+                  My Orders
+                </NavLink>
+              </ShowOnLogin>
+              <ShowOnLogin>
+                <NavLink to="/" onClick={logOut}>
+                  LogOut
+                </NavLink>
+              </ShowOnLogin>
             </span>
             <span className={styles.cart}>{cartIcon()}</span>
           </div>

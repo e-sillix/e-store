@@ -3,9 +3,9 @@ import styles from "./auth.module.scss";
 import regimg from "../../assets/regimage.jpg";
 import { Link, useNavigate } from "react-router-dom";
 import Card from "../../components/card/Card";
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../firebase/config";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Loader from "../../components/loader/Loader";
 
@@ -84,7 +84,7 @@ export default function Register() {
           </Card>
         </div>
         <div className={styles.img}>
-          <img src={regimg} alt="login image" width={400} />
+          <img src={regimg} alt="login " width={400} />
         </div>
       </section>
     </>
