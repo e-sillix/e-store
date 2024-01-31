@@ -1,0 +1,30 @@
+/* ProductDisplay.module.scss */
+
+.productPage {
+  display: flex;
+  justify-content: space-between;
+  padding: 20px;
+}
+
+.productInfo {
+  flex: 1;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+}
+
+.productDetails {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+
+.productImage {
+  flex: 1;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  margin-left: 20px;
+}
+
+/* Add more specific styles based on your design requirements */

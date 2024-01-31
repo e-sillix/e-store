@@ -4,6 +4,7 @@ import styles from "./ProductCard.module.scss";
 import { useState, useEffect } from "react";
 import { storage } from "../../firebase/config";
 import { ref, getDownloadURL } from "firebase/storage";
+import { Link } from "react-router-dom";
 
 export default function ProductCard({
   Name,
@@ -12,6 +13,7 @@ export default function ProductCard({
   Bought,
   category,
   categoryNo,
+  ProductID,
 }) {
   const [imageUrl, setImageUrl] = useState(null);
 
@@ -30,7 +32,14 @@ export default function ProductCard({
   }, []);
   return (
     <div className={styles.productcard}>
-      <img src={imageUrl} alt="product" width={100} />
+      <Link to={`/product/${ProductID}`}>
+        <img
+          src={imageUrl}
+          onClick={window.scroll(0, 0)}
+          alt="product"
+          width={100}
+        />
+      </Link>
       <h2>{Name}</h2>
       <h3>Rs. {Price}</h3>
       <p>Ratings: {Rating}/5</p>
