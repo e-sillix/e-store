@@ -12,6 +12,7 @@ import ProductDisplay from "./pages/productDisplay/ProductDisplay";
 import { fetchProducts } from "./redux/slice/productSlice";
 import Header from "./components/header/Header";
 import Footer from "./components/footer/Footer";
+import Cart from "./pages/cart/Cart";
 
 function App() {
   const dispatch = useDispatch();
@@ -43,6 +44,7 @@ function App() {
           </Route>
           <Route path="/register" element={<Register />} />
           <Route path="/reset" element={<Reset />} />
+          <Route path="/cart" element={<Cart />} />
         </Routes>
         <Footer />
       </BrowserRouter>
