@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import styles from "./Header.module.scss";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { FaShoppingCart, FaTimes, FaUserCircle } from "react-icons/fa";
@@ -6,19 +6,28 @@ import { HiOutlineMenuAlt3 } from "react-icons/hi";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import { auth } from "../../firebase/config";
 import { toast } from "react-toastify";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   REMOVE_ACTIVE_USER,
   SET_ACTIVE_USER,
 } from "../../redux/slice/authSlice";
 import ShowOnLogin, { ShowOnLogOut } from "../hiddenLink/hiddenLink";
+import { GET_CART_NUMBER, getCartsAsync } from "../../redux/slice/cartSlice";
+import TriggerContext from "../../Context"; // Import the TriggerContext
 
 export default function Header() {
   const [showMenu, setShowMenu] = useState(false);
   const [userName, setUserName] = useState("");
+  const [cartNo, setCartNo] = useState(0);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const { cartProducts } = useSelector((s) => s.cart);
+
+  // Access the triggerRender function from the TriggerContext
+  const { triggerRender } = useContext(TriggerContext);
+
   useEffect(() => {
+    console.log("header");
     onAuthStateChanged(auth, (user) => {
       if (user) {
         if (!user.displayName) {
@@ -35,12 +44,14 @@ export default function Header() {
             userID: user.uid,
           })
         );
+        dispatch(getCartsAsync(dispatch));
+        console.log("running gets");
       } else {
         setUserName("");
         dispatch(REMOVE_ACTIVE_USER());
       }
     });
-  }, [dispatch]);
+  }, [dispatch, getCartsAsync, triggerRender]); // Include triggerRender in the dependency array
 
   const toggleMenu = () => {
     setShowMenu(!showMenu);
@@ -63,7 +74,7 @@ export default function Header() {
       <Link to="/cart">
         Cart
         <FaShoppingCart size={20} />
-        <p>0</p>
+        <p>{cartProducts}</p>
       </Link>
     );
   };
@@ -72,6 +83,7 @@ export default function Header() {
       .then(() => {
         toast.success("LogOut Succesfully.");
         navigate("/");
+        window.location.reload();
       })
       .catch((error) => {
         toast.error(error.message);

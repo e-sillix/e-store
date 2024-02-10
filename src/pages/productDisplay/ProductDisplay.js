@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import styles from "./ProductDisplay.module.scss";
 import { useParams } from "react-router";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { auth, db, storage } from "../../firebase/config";
 import { ref, getDownloadURL } from "firebase/storage";
 import {
@@ -13,13 +13,15 @@ import {
   setDoc,
   updateDoc,
 } from "firebase/firestore";
+import TriggerContext from "../../Context";
 
 export default function ProductDisplay() {
   const { all_products } = useSelector((s) => s.product);
+  const { triggerRender } = useContext(TriggerContext);
   const { productId } = useParams();
   const product = all_products.find((e) => e.ProductID === Number(productId));
   const [imageUrl, setImageUrl] = useState(null);
-
+  console.log("running display");
   const fetcher = async (suffix) => {
     try {
       const storageRef = ref(
@@ -52,6 +54,7 @@ export default function ProductDisplay() {
   };
 
   const addToCart = () => {
+    console.log("running add to cart");
     auth.onAuthStateChanged(async (user) => {
       if (user) {
         const userId = user.uid;
@@ -78,6 +81,7 @@ export default function ProductDisplay() {
           await setDoc(newUserDocRef, { userId });
           await setDoc(doc(cartCollection, productId), cartItem);
         }
+        triggerRender();
       } else {
         console.log("No user is signed in.");
       }
@@ -100,7 +104,7 @@ export default function ProductDisplay() {
         <h1>{product.Name}</h1>
         <div className={styles.productDetails}>
           <div>
-            <p>Price: ${product.Price}</p>
+            <p>Price: Rs.{product.Price}</p>
             <p>Rating: {product.Rating}/5</p>
             <p>Bought: {product.Bought} times</p>
           </div>
