@@ -14,14 +14,17 @@ import {
   updateDoc,
 } from "firebase/firestore";
 import TriggerContext from "../../Context";
+import { toast } from "react-toastify";
 
 export default function ProductDisplay() {
+  const { isLoggedIn, userID } = useSelector((s) => s.auth);
+  console.log("running display");
   const { all_products } = useSelector((s) => s.product);
   const { triggerRender } = useContext(TriggerContext);
   const { productId } = useParams();
-  const product = all_products.find((e) => e.ProductID === Number(productId));
+  const product = all_products.find((e) => e.productId === Number(productId));
+  console.log(product);
   const [imageUrl, setImageUrl] = useState(null);
-  console.log("running display");
   const fetcher = async (suffix) => {
     try {
       const storageRef = ref(
@@ -29,7 +32,7 @@ export default function ProductDisplay() {
         `${product.category}/${product.categoryNo}${suffix}.jpg`
       );
       const url = await getDownloadURL(storageRef);
-
+      console.log(url);
       return url;
     } catch (error) {
       console.error("Error fetching image URL:", error);
@@ -48,44 +51,44 @@ export default function ProductDisplay() {
     // Now you can use the other image URLs as needed
   };
 
-  const cartItem = {
-    productId: productId,
-    amount: 1,
-  };
-
-  const addToCart = () => {
+  const addToCart = async (product) => {
     console.log("running add to cart");
-    auth.onAuthStateChanged(async (user) => {
-      if (user) {
-        const userId = user.uid;
-        const userDocRef = doc(collection(db, "user"), userId);
-        const userDocSnapshot = await getDoc(userDocRef);
+    const cartItem = {
+      productId: productId,
+      amount: 1,
+      cost: product.newPrice,
+    };
 
-        if (userDocSnapshot.exists()) {
-          const cartCollection = collection(userDocRef, "cart");
-          const cartItemDocRef = doc(cartCollection, productId);
-          const cartItemDocSnapshot = await getDoc(cartItemDocRef);
+    if (isLoggedIn) {
+      console.log("running getcaart 1");
+      const userDocRef = doc(collection(db, "user"), userID);
+      const userDocSnapshot = await getDoc(userDocRef);
 
-          if (cartItemDocSnapshot.exists()) {
-            const currentAmount = cartItemDocSnapshot.data().amount || 0;
-            const updatedAmount = currentAmount + 1;
-            await updateDoc(cartItemDocRef, { amount: updatedAmount });
-          } else {
-            await setDoc(cartItemDocRef, { ...cartItem, amount: 1 });
-          }
+      if (userDocSnapshot.exists()) {
+        const cartCollection = collection(userDocRef, "cart");
+        const cartItemDocRef = doc(cartCollection, productId);
+        const cartItemDocSnapshot = await getDoc(cartItemDocRef);
+
+        if (cartItemDocSnapshot.exists()) {
+          const currentAmount = cartItemDocSnapshot.data().amount || 0;
+          const updatedAmount = currentAmount + 1;
+          await updateDoc(cartItemDocRef, { amount: updatedAmount });
         } else {
-          const usersCollection = collection(db, "user");
-          const newUserDocRef = doc(usersCollection, userId);
-          const cartCollection = collection(newUserDocRef, "cart");
-
-          await setDoc(newUserDocRef, { userId });
-          await setDoc(doc(cartCollection, productId), cartItem);
+          await setDoc(cartItemDocRef, { ...cartItem, amount: 1 });
         }
-        triggerRender();
       } else {
-        console.log("No user is signed in.");
+        const usersCollection = collection(db, "user");
+        const newUserDocRef = doc(usersCollection, userID);
+        const cartCollection = collection(newUserDocRef, "cart");
+
+        await setDoc(newUserDocRef, { userID });
+        await setDoc(doc(cartCollection, productId), cartItem);
       }
-    });
+      toast.success("Item added to Cart");
+      triggerRender();
+    } else {
+      toast.error("No user signed in.");
+    }
   };
 
   useEffect(() => {
@@ -101,12 +104,13 @@ export default function ProductDisplay() {
   return (
     <div className={styles.productPage}>
       <div className={styles.productInfo}>
-        <h1>{product.Name}</h1>
+        <h1>{product.name}</h1>
         <div className={styles.productDetails}>
           <div>
-            <p>Price: Rs.{product.Price}</p>
-            <p>Rating: {product.Rating}/5</p>
-            <p>Bought: {product.Bought} times</p>
+            <p>Price: Rs.{product.oldPrice}</p>
+            <p>Price: Rs.{product.newPrice}</p>
+            <p>Rating: {product.rating}/5</p>
+            <p>Bought: {product.bought} times</p>
           </div>
           <div>
             <p>Category: {product.category}</p>
@@ -115,7 +119,7 @@ export default function ProductDisplay() {
           </div>
         </div>
         <div>
-          <button onClick={addToCart}>Add To Cart</button>
+          <button onClick={() => addToCart(product)}>Add To Cart</button>
         </div>
       </div>
       <div className={styles.productImage}>

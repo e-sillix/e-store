@@ -16,6 +16,7 @@ export default function Login() {
   const loginUser = (e) => {
     e.preventDefault();
     setIsLoading(true);
+    // window.location.reload();
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         setIsLoading(false);
@@ -30,6 +31,7 @@ export default function Login() {
   const googlelogin = (e) => {
     signInWithPopup(auth, googleProvider)
       .then((result) => {
+        // window.location.reload();
         setIsLoading(false);
         navigate("/");
         toast.success("Login Successful");

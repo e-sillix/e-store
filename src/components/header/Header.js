@@ -18,16 +18,16 @@ import TriggerContext from "../../Context"; // Import the TriggerContext
 export default function Header() {
   const [showMenu, setShowMenu] = useState(false);
   const [userName, setUserName] = useState("");
-  const [cartNo, setCartNo] = useState(0);
+  // const [cartNo, setCartNo] = useState(0);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { cartProducts } = useSelector((s) => s.cart);
+  const { isLoggedIn } = useSelector((s) => s.auth);
 
   // Access the triggerRender function from the TriggerContext
   const { triggerRender } = useContext(TriggerContext);
 
   useEffect(() => {
-    console.log("header");
     onAuthStateChanged(auth, (user) => {
       if (user) {
         if (!user.displayName) {
@@ -45,7 +45,7 @@ export default function Header() {
           })
         );
         dispatch(getCartsAsync(dispatch));
-        console.log("running gets");
+        console.log("running header gets");
       } else {
         setUserName("");
         dispatch(REMOVE_ACTIVE_USER());
@@ -74,7 +74,7 @@ export default function Header() {
       <Link to="/cart">
         Cart
         <FaShoppingCart size={20} />
-        <p>{cartProducts}</p>
+        <p>{isLoggedIn ? cartProducts : 0}</p>
       </Link>
     );
   };
@@ -83,7 +83,7 @@ export default function Header() {
       .then(() => {
         toast.success("LogOut Succesfully.");
         navigate("/");
-        window.location.reload();
+        // window.location.reload();
       })
       .catch((error) => {
         toast.error(error.message);
@@ -131,14 +131,11 @@ export default function Header() {
                   {userName}
                 </a>
               </ShowOnLogin>
-              <NavLink to="/register" className={activeLink}>
-                Register
-              </NavLink>
-              <ShowOnLogin>
-                <NavLink to="/order-History" className={activeLink}>
-                  My Orders
+              <ShowOnLogOut>
+                <NavLink to="/register" className={activeLink}>
+                  Register
                 </NavLink>
-              </ShowOnLogin>
+              </ShowOnLogOut>
               <ShowOnLogin>
                 <NavLink to="/" onClick={logOut}>
                   LogOut

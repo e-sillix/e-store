@@ -1,9 +1,11 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { auth, db } from "../../firebase/config";
 import { collection, doc, getDoc, getDocs } from "firebase/firestore";
+import { useSelector } from "react-redux";
 
 const initialState = {
   cartProducts: 0,
+  totalCost: 0,
 };
 
 export const getCartsAsync = (dispatch) => async () => {
@@ -11,6 +13,7 @@ export const getCartsAsync = (dispatch) => async () => {
     if (user) {
       const userId = user.uid;
       // console.log(userId);
+      console.log("runnig getcartsasync");
       const userDocRef = doc(collection(db, "user"), userId);
       try {
         const userDocSnapshot = await getDoc(userDocRef);
@@ -29,18 +32,23 @@ export const getCartsAsync = (dispatch) => async () => {
             (acc, curr) => acc + curr.amount,
             0
           );
-          dispatch(setCartProducts(totalAmount));
-          console.log("cartrendere ");
+          const totalCost = cartData.reduce(
+            (acc, curr) => acc + curr.amount * curr.cost,
+            0
+          );
+          dispatch(setCartProducts({ totalAmount, totalCost }));
+          // console.log("cartrendere ");
         } else {
           console.log("User document doesn't exist.");
           return [];
         }
       } catch (error) {
         console.error("Error getting user cart data:", error);
-        return [];
+        // return [];
       }
     } else {
       console.log("User not logged in");
+      dispatch(setCartProducts(0));
     }
   });
 };
@@ -50,7 +58,9 @@ const cartslice = createSlice({
   initialState,
   reducers: {
     setCartProducts: (state, action) => {
-      state.cartProducts = action.payload;
+      const { totalAmount, totalCost } = action.payload;
+      state.cartProducts = totalAmount;
+      state.totalCost = totalCost;
     },
   },
 });

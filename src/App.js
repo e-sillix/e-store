@@ -26,13 +26,10 @@ function App() {
   const { status, error } = useSelector((state) => state.product);
   const [reRender, setReRender] = useState(true);
   const triggerRender = () => {
+    console.log("rann rendereere");
     setReRender((prevState) => !prevState);
-    console.log("running render", reRender);
   };
-  console.log("running app");
   React.useEffect(() => {
-    console.log(reRender);
-
     dispatch(fetchProducts());
   }, [dispatch]);
 

@@ -25,6 +25,7 @@ export default function Register() {
     setIsLoading(true);
     createUserWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
+        // window.location.reload();
         // Signed up
         const user = userCredential.user;
         console.log(user);

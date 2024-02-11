@@ -7,6 +7,7 @@ import { useSelector } from "react-redux";
 
 export default function Home() {
   const { all_products } = useSelector((s) => s.product);
+
   return (
     <div>
       <Slider />

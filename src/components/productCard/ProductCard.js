@@ -7,13 +7,14 @@ import { ref, getDownloadURL } from "firebase/storage";
 import { Link } from "react-router-dom";
 
 export default function ProductCard({
-  Name,
-  Price,
-  Rating,
-  Bought,
+  name,
+  newPrice,
+  oldPrice,
+  rating,
+  bought,
   category,
   categoryNo,
-  ProductID,
+  productId,
 }) {
   const [imageUrl, setImageUrl] = useState(null);
 
@@ -32,7 +33,7 @@ export default function ProductCard({
   }, []);
   return (
     <div className={styles.productcard}>
-      <Link to={`/product/${ProductID}`}>
+      <Link to={`/product/${productId}`}>
         <img
           src={imageUrl}
           onClick={window.scroll(0, 0)}
@@ -40,10 +41,11 @@ export default function ProductCard({
           width={100}
         />
       </Link>
-      <h2>{Name}</h2>
-      <h3>Rs. {Price}</h3>
-      <p>Ratings: {Rating}/5</p>
-      <p>{Bought}</p>
+      <h2>{name}</h2>
+      <h3>Rs. {newPrice}</h3>
+      <h3>Rs. {oldPrice}</h3>
+      <p>Ratings: {rating}/5</p>
+      <p>{bought}</p>
     </div>
   );
 }
