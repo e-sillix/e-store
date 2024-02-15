@@ -38,12 +38,13 @@ export default function ProductCard({
           src={imageUrl}
           onClick={window.scroll(0, 0)}
           alt="product"
-          width={100}
+          width={150}
+          height={180}
         />
       </Link>
-      <h2>{name}</h2>
-      <h3>Rs. {newPrice}</h3>
-      <h3>Rs. {oldPrice}</h3>
+      <h4>{name}</h4>
+      <p>Rs. {newPrice}</p>
+      <p>Rs. {oldPrice}</p>
       <p>Ratings: {rating}/5</p>
       <p>{bought}</p>
     </div>

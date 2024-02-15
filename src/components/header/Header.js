@@ -12,7 +12,7 @@ import {
   SET_ACTIVE_USER,
 } from "../../redux/slice/authSlice";
 import ShowOnLogin, { ShowOnLogOut } from "../hiddenLink/hiddenLink";
-import { GET_CART_NUMBER, getCartsAsync } from "../../redux/slice/cartSlice";
+import { getCartsAsync } from "../../redux/slice/cartSlice";
 import TriggerContext from "../../Context"; // Import the TriggerContext
 
 export default function Header() {

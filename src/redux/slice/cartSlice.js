@@ -1,7 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { auth, db } from "../../firebase/config";
 import { collection, doc, getDoc, getDocs } from "firebase/firestore";
-import { useSelector } from "react-redux";
 
 const initialState = {
   cartProducts: 0,

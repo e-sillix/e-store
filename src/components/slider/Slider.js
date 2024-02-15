@@ -8,7 +8,7 @@ export default function Slider() {
   const slideLength = sliderData.length;
 
   const autoScroll = true;
-  let slideInterval;
+  // let slideInterval;
   let intervalTime = 5000;
   const nextSlide = () => {
     if (currentSlide === slideLength - 1) {

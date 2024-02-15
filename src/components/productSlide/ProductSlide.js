@@ -10,7 +10,7 @@ export default function ProductSlide({ category, products }) {
     return (
       <div className={styles.slidecard}>
         <hr />
-        <h3>{category}</h3>
+        <h3>{category.charAt(0).toUpperCase() + category.slice(1)}</h3>
         <div className={styles.products}>
           {categoryproduct.map((p) => {
             return <ProductCard {...p} key={p.id} category={category} />;

@@ -1,12 +1,7 @@
 // App.js
-import React, { createContext, useState } from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  Routes,
-  Route,
-  BrowserRouter,
-  createBrowserRouter,
-} from "react-router-dom";
+import { Routes, Route, BrowserRouter } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import Home from "./pages/home/Home";
 import Contact from "./pages/contact/Contact";
@@ -18,7 +13,6 @@ import { fetchProducts } from "./redux/slice/productSlice";
 import Header from "./components/header/Header";
 import Footer from "./components/footer/Footer";
 import Cart from "./pages/cart/Cart";
-import { render } from "@testing-library/react";
 import TriggerContext from "./Context";
 
 function App() {

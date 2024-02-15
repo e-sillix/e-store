@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import styles from "./Cart.module.scss"; // Import your SCSS module for styles
-import { auth, db, storage } from "../../firebase/config";
+import { db, storage } from "../../firebase/config";
 import {
   collection,
   deleteDoc,
